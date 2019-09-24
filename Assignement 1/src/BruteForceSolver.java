@@ -14,7 +14,7 @@ public class BruteForceSolver implements Solver {
         return max;
     }
 
-    public AuctionProblemInstance.Solution solve(AuctionProblemInstance a) {
+    public AuctionProblemInstance.Solution solve(AuctionProblemInstance a, double epsilon) {
         int[] assignment = new int[a.k];
         return new AuctionProblemInstance.Solution(getOptimalValue(a, assignment, 0), 0);
     }
