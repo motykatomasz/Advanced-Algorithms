@@ -1,9 +1,27 @@
 import java.util.Objects;
 
+/**
+ * Data structure for representing tuple of (vi,ai)
+ */
 public class Tuple {
+
+    /**
+     * Bit-vector of items assigned to the bidder (ai)
+     */
     int[] assignment;
+    /**
+     * Total benefit of the bidder (vi)
+     */
     int value;
+
+    /**
+     * Index of the segment (Necessary for trimming)
+     */
     int rangeIndex;
+
+    /**
+     * Size of the segment (Necessary for trimming)
+     */
     double step;
 
     public Tuple(int n, double step) {
@@ -11,6 +29,10 @@ public class Tuple {
         this.step = step;
     }
 
+    /**
+     * Copy constructor.
+     * @param tuple
+     */
     public Tuple(Tuple tuple) {
         assignment = new int[tuple.assignment.length];
         for (int i = 0; i < tuple.assignment.length; i++) {

@@ -1,9 +1,32 @@
 import java.util.Arrays;
 
+/**
+ * Data structure for representing intermediate solution (v1,a1,...vn,an,t)
+ */
 public class IntermediateSolution {
+    /**
+     * List of simpler tuples (v1,a1,...vn,an)
+     */
     Tuple[] tuples;
+
+    /**
+     * Total revenue of the intermediate solution (t)
+     */
     int totalRevenue = 0;
 
+    /**
+     * Getter
+     * @return
+     */
+    public int getTotalRevenue() {
+        return totalRevenue;
+    }
+
+    /**
+     * Constructor
+     * @param n - Number of bidders
+     * @param step - Size of segment
+     */
     public IntermediateSolution(int n, double step) {
         tuples = new Tuple[n];
         for (int i = 0; i < n; i++) {
@@ -11,6 +34,10 @@ public class IntermediateSolution {
         }
     }
 
+    /**
+     * Copy constructor
+     * @param is - Other IntermediateSolution
+     */
     public IntermediateSolution(IntermediateSolution is) {
         tuples = new Tuple[is.tuples.length];
         for (int i = 0; i < is.tuples.length; i++) {
@@ -19,6 +46,12 @@ public class IntermediateSolution {
         totalRevenue = is.totalRevenue;
     }
 
+    /**
+     * Method for assigning item to bidder
+     * @param bid Amount that the bidder bids
+     * @param item Index of item
+     * @param bidder Index of bidder
+     */
     public void assignItem(int bid, int item, int bidder) {
         Tuple copy = tuples[bidder];
         copy.assignItem(bid, item);
