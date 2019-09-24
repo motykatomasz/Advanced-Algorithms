@@ -7,7 +7,7 @@ public class IntermediateSolution {
     public IntermediateSolution(int n, double step) {
         tuples = new Tuple[n];
         for (int i = 0; i < n; i++) {
-            tuples[i] = new Tuple(n,step);
+            tuples[i] = new Tuple(n, step);
         }
     }
 
@@ -21,9 +21,23 @@ public class IntermediateSolution {
 
     public void assignItem(int bid, int item, int bidder) {
         Tuple copy = tuples[bidder];
-        copy.assignItem(bid,item);
+        copy.assignItem(bid, item);
         tuples[bidder] = copy;
         totalRevenue = bid;
+    }
+
+    public boolean isInRange(IntermediateSolution is) {
+        for (int i = 0; i < is.tuples.length; i++) {
+            Tuple elemI = is.tuples[i];
+            if (is.tuples[i].rangeIndex == tuples[i].rangeIndex) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean compareTotalRevenue(IntermediateSolution is) {
+        return this.totalRevenue > is.totalRevenue;
     }
 
     @Override
