@@ -13,7 +13,7 @@ public class FPTASSolver implements Solver {
 
         // 3. Initialize first solution
         List<IntermediateSolution> S = new ArrayList<>();
-        IntermediateSolution firstSolution = new IntermediateSolution(a.n, step);
+        IntermediateSolution firstSolution = new IntermediateSolution(a.n, a.k, step);
         S.add(firstSolution);
 
         // 4. Magic
@@ -27,32 +27,10 @@ public class FPTASSolver implements Solver {
                 }
             }
             // 5. More magic
-            newS = trim(newS);
-            S = newS;
+            S = Tools.trim(newS);
         }
 
         return S.stream().max(Comparator.comparing(IntermediateSolution::getTotalRevenue)).orElse(null).getTotalRevenue();
-    }
-
-    public static List<IntermediateSolution> trim(List<IntermediateSolution> intermediateSolutions) {
-        //TODO: try with iterators or make deep copy
-        List<IntermediateSolution> copy = intermediateSolutions;
-
-        for (int i = 0; i < intermediateSolutions.size(); i++) {
-            IntermediateSolution elemI = intermediateSolutions.get(i);
-            for (int j = i; j < intermediateSolutions.size(); j++) {
-                IntermediateSolution elemJ = intermediateSolutions.get(j);
-
-                if (elemI.isInRange(elemJ)) {
-                    if (elemI.compareTotalRevenue(elemJ)) {
-                        copy.remove(elemJ);
-                    } else {
-                        copy.remove(elemI);
-                    }
-                }
-            }
-        }
-        return copy;
     }
 
     public AuctionProblemInstance.Solution solve(AuctionProblemInstance a, double epsilon) {

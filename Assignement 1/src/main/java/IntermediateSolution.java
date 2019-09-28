@@ -1,4 +1,3 @@
-import java.util.Arrays;
 
 /**
  * Data structure for representing intermediate solution (v1,a1,...vn,an,t)
@@ -7,30 +6,43 @@ public class IntermediateSolution {
     /**
      * List of simpler tuples (v1,a1,...vn,an)
      */
-    Tuple[] tuples;
+    private Tuple[] tuples;
 
     /**
      * Total revenue of the intermediate solution (t)
      */
-    int totalRevenue = 0;
+    private int totalRevenue;
 
     /**
      * Getter
      * @return
      */
-    public int getTotalRevenue() {
+    int getTotalRevenue() {
         return totalRevenue;
+    }
+
+    void setTotalRevenue(int totalRevenue) {
+        this.totalRevenue = totalRevenue;
+    }
+
+    public Tuple[] getTuples() {
+        return tuples;
+    }
+
+    void setTuples(Tuple[] tuples) {
+        this.tuples = tuples;
     }
 
     /**
      * Constructor
      * @param n - Number of bidders
+     * @param k - Number of items
      * @param step - Size of segment
      */
-    public IntermediateSolution(int n, double step) {
+    IntermediateSolution(int n, int k, double step) {
         tuples = new Tuple[n];
         for (int i = 0; i < n; i++) {
-            tuples[i] = new Tuple(n, step);
+            tuples[i] = new Tuple(k, step);
         }
     }
 
@@ -38,7 +50,7 @@ public class IntermediateSolution {
      * Copy constructor
      * @param is - Other IntermediateSolution
      */
-    public IntermediateSolution(IntermediateSolution is) {
+    IntermediateSolution(IntermediateSolution is) {
         tuples = new Tuple[is.tuples.length];
         for (int i = 0; i < is.tuples.length; i++) {
             tuples[i] = new Tuple(is.tuples[i]);
@@ -52,38 +64,21 @@ public class IntermediateSolution {
      * @param item Index of item
      * @param bidder Index of bidder
      */
-    public void assignItem(int bid, int item, int bidder) {
-        Tuple copy = tuples[bidder];
-        copy.assignItem(bid, item);
-        tuples[bidder] = copy;
-        totalRevenue = bid;
+    void assignItem(int bid, int item, int bidder) {
+        tuples[bidder].assignItem(bid,item);
+        totalRevenue += bid;
     }
 
-    public boolean isInRange(IntermediateSolution is) {
+    boolean isInRange(IntermediateSolution is) {
         for (int i = 0; i < is.tuples.length; i++) {
-            Tuple elemI = is.tuples[i];
-            if (is.tuples[i].rangeIndex == tuples[i].rangeIndex) {
-                return true;
+            if (is.tuples[i].getRangeIndex() != this.tuples[i].getRangeIndex()) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
-    public boolean compareTotalRevenue(IntermediateSolution is) {
+    boolean compareTotalRevenue(IntermediateSolution is) {
         return this.totalRevenue > is.totalRevenue;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof IntermediateSolution)) return false;
-        IntermediateSolution that = (IntermediateSolution) o;
-        //TODO: Check if this works
-        return Arrays.equals(tuples, that.tuples);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(tuples);
     }
 }

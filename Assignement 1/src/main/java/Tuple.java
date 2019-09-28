@@ -8,48 +8,71 @@ public class Tuple {
     /**
      * Bit-vector of items assigned to the bidder (ai)
      */
-    int[] assignment;
+    private int[] assignment;
     /**
      * Total benefit of the bidder (vi)
      */
-    int value;
+    private int value;
 
     /**
      * Index of the segment (Necessary for trimming)
      */
-    int rangeIndex;
+    private int rangeIndex;
 
     /**
      * Size of the segment (Necessary for trimming)
      */
-    double step;
+    private double step;
 
-    public Tuple(int n, double step) {
+    public int[] getAssignment() {
+        return assignment;
+    }
+
+    void setAssignment(int[] assignment) {
+        this.assignment = assignment;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    void setValue(int value) {
+        this.value = value;
+    }
+
+    public int getRangeIndex() {
+        return rangeIndex;
+    }
+
+    public void setRangeIndex(int rangeIndex) {
+        this.rangeIndex = rangeIndex;
+    }
+
+    Tuple(int n, double step) {
         assignment = new int[n];
         this.step = step;
     }
 
     /**
      * Copy constructor.
-     * @param tuple
+     *
+     * @param tuple Tuple to copy from
      */
-    public Tuple(Tuple tuple) {
+    Tuple(Tuple tuple) {
         assignment = new int[tuple.assignment.length];
-        for (int i = 0; i < tuple.assignment.length; i++) {
-            assignment[i] = tuple.assignment[i];
-        }
+        System.arraycopy(tuple.assignment, 0, this.assignment, 0, tuple.assignment.length - 1);
         value = tuple.value;
         rangeIndex = tuple.rangeIndex;
         step = tuple.step;
     }
 
-    public void assignRange() {
-        rangeIndex = (int) Math.floor(this.value / step);
+    void assignRange() {
+        rangeIndex = (int) Math.floor(value / step);
     }
 
-    public void assignItem(int bid, int item) {
-        assignment[item]=1;
-        value+=bid;
+    void assignItem(int bid, int item) {
+        assignment[item] = 1;
+        value += bid;
         assignRange();
     }
 
@@ -58,7 +81,7 @@ public class Tuple {
         if (this == o) return true;
         if (!(o instanceof Tuple)) return false;
         Tuple tuple = (Tuple) o;
-        return rangeIndex == tuple.rangeIndex;
+        return rangeIndex == tuple.getRangeIndex();
     }
 
     @Override
