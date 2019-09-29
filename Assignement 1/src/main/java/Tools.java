@@ -10,23 +10,23 @@ public class Tools {
     }
 
     static List<IntermediateSolution> trim(List<IntermediateSolution> intermediateSolutions) {
-        Set<IntermediateSolution> toRemove = new HashSet<>();
 
         for (int i = 0; i < intermediateSolutions.size(); i++) {
             IntermediateSolution elemI = intermediateSolutions.get(i);
-            for (int j = i+1; j < intermediateSolutions.size(); j++) {
+            for (int j = i + 1; j < intermediateSolutions.size(); j++) {
                 IntermediateSolution elemJ = intermediateSolutions.get(j);
-
-                if (elemI.isInRange(elemJ)) {
-                    if (elemI.compareTotalRevenue(elemJ)) {
-                        toRemove.add(elemJ);
+                if (Arrays.equals(elemI.getTuples(), elemJ.getTuples())) {
+                    if (elemI.compareTotalRevenue(elemJ.getTotalRevenue())) {
+                        intermediateSolutions.remove(elemJ);
+                        j--;
                     } else {
-                        toRemove.add(elemI);
+                        intermediateSolutions.remove(elemI);
+                        i--;
+                        break;
                     }
                 }
             }
         }
-        intermediateSolutions.removeAll(toRemove);
         return intermediateSolutions;
     }
 }

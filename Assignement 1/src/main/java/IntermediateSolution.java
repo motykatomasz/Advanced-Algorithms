@@ -69,16 +69,7 @@ public class IntermediateSolution {
         totalRevenue += bid;
     }
 
-    boolean isInRange(IntermediateSolution is) {
-        for (int i = 0; i < is.tuples.length; i++) {
-            if (is.tuples[i].getRangeIndex() != this.tuples[i].getRangeIndex()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    boolean compareTotalRevenue(IntermediateSolution is) {
-        return this.totalRevenue > is.totalRevenue;
+    boolean compareTotalRevenue(int totalRevenue) {
+        return this.totalRevenue > totalRevenue;
     }
 }

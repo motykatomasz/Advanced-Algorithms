@@ -80,7 +80,5 @@ public class TrimmingTest {
         assertTrue(trimmingResult.contains(is4));
 
         assertFalse(trimmingResult.contains(is2));
-
-
     }
 }

@@ -1,10 +1,14 @@
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class FPTASSolver implements Solver {
 
     public static int getAproxximateValue(AuctionProblemInstance a, int[] assignment, int item, double epsilon) {
+
+        long startTime = System.currentTimeMillis();
+
         // 1. Calculate gamma
         int gamma = Tools.maxInArray(a.d);
 
@@ -27,8 +31,14 @@ public class FPTASSolver implements Solver {
                 }
             }
             // 5. More magic
+            System.out.println("S size for iteration " + j + " before trimming = " + newS.size());
             S = Tools.trim(newS);
+            System.out.println("S size for iteration " + j + " after trimming = " + S.size());
         }
+
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        System.out.println("Execution time = " + elapsedTime + " miliseconds");
 
         return S.stream().max(Comparator.comparing(IntermediateSolution::getTotalRevenue)).orElse(null).getTotalRevenue();
     }
