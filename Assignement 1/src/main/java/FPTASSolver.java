@@ -40,7 +40,19 @@ public class FPTASSolver implements Solver {
         long elapsedTime = stopTime - startTime;
         System.out.println("Execution time = " + elapsedTime + " miliseconds");
 
-        return S.stream().max(Comparator.comparing(IntermediateSolution::getTotalRevenue)).orElse(null).getTotalRevenue();
+        IntermediateSolution finalSolution =  S.stream().max(Comparator.comparing(IntermediateSolution::getTotalRevenue)).orElse(null);
+
+        Tuple[] finalTuples =  finalSolution.getTuples();
+
+        for (int i=0; i < finalTuples.length; i++) {
+            int[] ass = finalTuples[i].getAssignment();
+            for (int j=0; j < ass.length; j++) {
+                if (ass[j] == 1)
+                    assignment[j] = i;
+            }
+        }
+
+        return finalSolution.getTotalRevenue();
     }
 
     public AuctionProblemInstance.Solution solve(AuctionProblemInstance a, double epsilon) {
