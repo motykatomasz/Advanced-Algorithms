@@ -1,15 +1,17 @@
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
-import org.junit.*;
-
-public class TrimmingTest {
+public class ListToMapConversion {
 
     @Test
-    public void testTrimming() {
+    public void testConvertingListToHashMap() {
+
         double step = 6;
         int n = 2;
         int k = 3;
@@ -73,12 +75,8 @@ public class TrimmingTest {
 
         List<IntermediateSolution> intermediateSolutions = new ArrayList<>(List.of(is1, is2, is3, is4));
 
-        List<IntermediateSolution> trimmingResult = Tools.trimWithMap(intermediateSolutions);
+        Map<Integer, List<IntermediateSolution>> mapped = intermediateSolutions.stream().collect(Collectors.groupingBy(IntermediateSolution::hashTuples));
 
-        assertTrue(trimmingResult.contains(is1));
-        assertTrue(trimmingResult.contains(is3));
-        assertTrue(trimmingResult.contains(is4));
-
-        assertFalse(trimmingResult.contains(is2));
+        assertTrue(mapped.size() == 3);
     }
 }

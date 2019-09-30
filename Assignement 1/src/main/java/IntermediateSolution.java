@@ -1,3 +1,4 @@
+import java.util.Arrays;
 
 /**
  * Data structure for representing intermediate solution (v1,a1,...vn,an,t)
@@ -71,5 +72,9 @@ public class IntermediateSolution {
 
     boolean compareTotalRevenue(int totalRevenue) {
         return this.totalRevenue > totalRevenue;
+    }
+
+    int hashTuples() {
+        return Arrays.hashCode(getTuples());
     }
 }

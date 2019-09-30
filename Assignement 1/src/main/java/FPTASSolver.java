@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class FPTASSolver implements Solver {
@@ -32,7 +31,7 @@ public class FPTASSolver implements Solver {
             }
             // 5. More magic
             System.out.println("S size for iteration " + j + " before trimming = " + newS.size());
-            S = Tools.trim(newS);
+            S = Tools.trimWithMap(newS);
             System.out.println("S size for iteration " + j + " after trimming = " + S.size());
         }
 

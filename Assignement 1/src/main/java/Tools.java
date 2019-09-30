@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Tools {
     public static int powi(int base, int exp) {
@@ -9,8 +10,18 @@ public class Tools {
         return Arrays.stream(array).max().getAsInt();
     }
 
-    static List<IntermediateSolution> trim(List<IntermediateSolution> intermediateSolutions) {
+    static List<IntermediateSolution> trimWithMap(List<IntermediateSolution> intermediateSolutions) {
+        Map<Integer, List<IntermediateSolution>> mapped = intermediateSolutions.stream().collect(Collectors.groupingBy(IntermediateSolution::hashTuples));
+        List<IntermediateSolution> newIntermediateSolutions = new ArrayList<>();
+        for (Map.Entry<Integer, List<IntermediateSolution>> entry : mapped.entrySet()) {
+            List<IntermediateSolution> is = entry.getValue();
+            trim(is);
+            newIntermediateSolutions.addAll(is);
+        }
+        return newIntermediateSolutions;
+    }
 
+    private static void trim(List<IntermediateSolution> intermediateSolutions) {
         for (int i = 0; i < intermediateSolutions.size(); i++) {
             IntermediateSolution elemI = intermediateSolutions.get(i);
             for (int j = i + 1; j < intermediateSolutions.size(); j++) {
@@ -27,12 +38,9 @@ public class Tools {
                 }
             }
         }
-        return intermediateSolutions;
     }
 
     static List<IntermediateSolution> trimWithIterators(List<IntermediateSolution> intermediateSolutions) {
-        //TODO  Sort intermediate solutions descending by total revenue
-
         intermediateSolutions.sort(Comparator.comparing(IntermediateSolution::getTotalRevenue));
         ListIterator<IntermediateSolution> iteratorI = intermediateSolutions.listIterator();
 
