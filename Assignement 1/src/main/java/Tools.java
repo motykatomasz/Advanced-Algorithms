@@ -29,4 +29,29 @@ public class Tools {
         }
         return intermediateSolutions;
     }
+
+    static List<IntermediateSolution> trimWithIterators(List<IntermediateSolution> intermediateSolutions) {
+        //TODO  Sort intermediate solutions descending by total revenue
+
+        intermediateSolutions.sort(Comparator.comparing(IntermediateSolution::getTotalRevenue));
+        ListIterator<IntermediateSolution> iteratorI = intermediateSolutions.listIterator();
+
+        while(iteratorI.hasNext()) {
+            IntermediateSolution elemI = iteratorI.next();
+            ListIterator<IntermediateSolution> iteratorJ = intermediateSolutions.listIterator(iteratorI.nextIndex());
+            while (iteratorJ.hasNext()) {
+                IntermediateSolution elemJ = iteratorJ.next();
+                if (Arrays.equals(elemI.getTuples(), elemJ.getTuples())) {
+                    if (elemI.compareTotalRevenue(elemJ.getTotalRevenue())) {
+                        iteratorJ.remove();
+                    } else {
+                        iteratorI.remove();
+                        break;
+                    }
+                }
+            }
+        }
+
+        return intermediateSolutions;
+    }
 }
