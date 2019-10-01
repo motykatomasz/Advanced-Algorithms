@@ -40,10 +40,10 @@ public class IntermediateSolution {
      * @param k - Number of items
      * @param step - Size of segment
      */
-    IntermediateSolution(int n, int k, double step) {
+    IntermediateSolution(int n, int k, double step, int[] d) {
         tuples = new Tuple[n];
         for (int i = 0; i < n; i++) {
-            tuples[i] = new Tuple(k, step);
+            tuples[i] = new Tuple(k, step, d[i]);
         }
     }
 
@@ -67,7 +67,7 @@ public class IntermediateSolution {
      */
     void assignItem(int bid, int item, int bidder) {
         tuples[bidder].assignItem(bid,item);
-        totalRevenue += bid;
+        calculateTotalRevenue();
     }
 
     boolean compareTotalRevenue(int totalRevenue) {
@@ -76,5 +76,12 @@ public class IntermediateSolution {
 
     int hashTuples() {
         return Arrays.hashCode(getTuples());
+    }
+
+    void calculateTotalRevenue() {
+        this.totalRevenue = 0;
+        for (int i = 0; i < tuples.length; i++) {
+            this.totalRevenue += tuples[i].getValue();
+        }
     }
 }

@@ -24,6 +24,8 @@ public class Tuple {
      */
     private double step;
 
+    private int maxValue;
+
     public int[] getAssignment() {
         return assignment;
     }
@@ -48,9 +50,18 @@ public class Tuple {
         this.rangeIndex = rangeIndex;
     }
 
-    Tuple(int n, double step) {
+    public int getMaxValue() {
+        return maxValue;
+    }
+
+    public void setMaxValue(int maxValue) {
+        this.maxValue = maxValue;
+    }
+
+    Tuple(int n, double step, int maxValue) {
         assignment = new int[n];
         this.step = step;
+        this.maxValue = maxValue;
     }
 
     /**
@@ -64,6 +75,7 @@ public class Tuple {
         value = tuple.value;
         rangeIndex = tuple.rangeIndex;
         step = tuple.step;
+        maxValue = tuple.maxValue;
     }
 
     void assignRange() {
@@ -72,7 +84,7 @@ public class Tuple {
 
     void assignItem(int bid, int item) {
         assignment[item] = 1;
-        value += bid;
+        value = Math.min(maxValue, value + bid);
         assignRange();
     }
 

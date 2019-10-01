@@ -21,7 +21,7 @@ public class Tools {
         return newIntermediateSolutions;
     }
 
-    private static void trim(List<IntermediateSolution> intermediateSolutions) {
+    static void trim(List<IntermediateSolution> intermediateSolutions) {
         for (int i = 0; i < intermediateSolutions.size(); i++) {
             IntermediateSolution elemI = intermediateSolutions.get(i);
             for (int j = i + 1; j < intermediateSolutions.size(); j++) {

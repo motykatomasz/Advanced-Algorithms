@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class FPTASSolver implements Solver {
 
@@ -16,23 +15,28 @@ public class FPTASSolver implements Solver {
 
         // 3. Initialize first solution
         List<IntermediateSolution> S = new ArrayList<>();
-        IntermediateSolution firstSolution = new IntermediateSolution(a.n, a.k, step);
+        IntermediateSolution firstSolution = new IntermediateSolution(a.n, a.k, step, a.d);
         S.add(firstSolution);
 
         // 4. Magic
         for (int j = 0; j < a.k; j++) {
-            List<IntermediateSolution> newS = new ArrayList<>();
+            Map<Integer, IntermediateSolution> map = new HashMap<>();
             for (IntermediateSolution is : S) {
                 for (int i = 0; i < a.n; i++) {
                     IntermediateSolution newIS = new IntermediateSolution(is);
                     newIS.assignItem(a.b[i][j], j, i);
-                    newS.add(newIS);
+
+                    if (!map.containsKey(newIS.hashTuples()))
+                        map.put(newIS.hashTuples(), newIS);
+                    else {
+                        IntermediateSolution maxElem = map.get(newIS.hashTuples());
+                        if (!maxElem.compareTotalRevenue(newIS.getTotalRevenue())) {
+                            map.put(newIS.hashTuples(), newIS);
+                        }
+                    }
                 }
             }
-            // 5. More magic
-            System.out.println("S size for iteration " + j + " before trimming = " + newS.size());
-            S = Tools.trimWithMap(newS);
-            System.out.println("S size for iteration " + j + " after trimming = " + S.size());
+            S = new ArrayList<>(map.values());
         }
 
         long stopTime = System.currentTimeMillis();
@@ -46,8 +50,10 @@ public class FPTASSolver implements Solver {
         for (int i=0; i < finalTuples.length; i++) {
             int[] ass = finalTuples[i].getAssignment();
             for (int j=0; j < ass.length; j++) {
-                if (ass[j] == 1)
+                if (ass[j] == 1) {
                     assignment[j] = i;
+                    // System.out.println(i);
+                }
             }
         }
 
