@@ -1,6 +1,7 @@
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -73,7 +74,7 @@ public class ListToMapConversion {
         is4.setTuples(new Tuple[] {t41,t42});
         is4.setTotalRevenue(8);
 
-        List<IntermediateSolution> intermediateSolutions = new ArrayList<>(List.of(is1, is2, is3, is4));
+        List<IntermediateSolution> intermediateSolutions = new ArrayList<>(Arrays.asList(is1, is2, is3, is4));
 
         Map<Integer, List<IntermediateSolution>> mapped = intermediateSolutions.stream().collect(Collectors.groupingBy(IntermediateSolution::hashTuples));
 

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -72,7 +73,7 @@ public class TrimmingTest {
         is4.setTuples(new Tuple[] {t41,t42});
         is4.setTotalRevenue(8);
 
-        List<IntermediateSolution> intermediateSolutions = new ArrayList<>(List.of(is1, is2, is3, is4));
+        List<IntermediateSolution> intermediateSolutions = new ArrayList<>(Arrays.asList(is1, is2, is3, is4));
 
         Tools.trim(intermediateSolutions);
 
