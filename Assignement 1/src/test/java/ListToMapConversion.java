@@ -11,23 +11,23 @@ public class ListToMapConversion {
 
     @Test
     public void testConvertingListToHashMap() {
-
+        int[] d = new int[] {10,20};
         double step = 6;
         int n = 2;
         int k = 3;
-        IntermediateSolution is1 = new IntermediateSolution(n, k, step);
-        IntermediateSolution is2 = new IntermediateSolution(n, k, step);
-        IntermediateSolution is3 = new IntermediateSolution(n, k, step);
-        IntermediateSolution is4 = new IntermediateSolution(n, k, step);
+        IntermediateSolution is1 = new IntermediateSolution(n, k, step, d);
+        IntermediateSolution is2 = new IntermediateSolution(n, k, step, d);
+        IntermediateSolution is3 = new IntermediateSolution(n, k, step, d);
+        IntermediateSolution is4 = new IntermediateSolution(n, k, step, d);
 
-        Tuple t11 = new Tuple(n, step);
-        Tuple t12 = new Tuple(n, step);
-        Tuple t21 = new Tuple(n, step);
-        Tuple t22 = new Tuple(n, step);
-        Tuple t31 = new Tuple(n, step);
-        Tuple t32 = new Tuple(n, step);
-        Tuple t41 = new Tuple(n, step);
-        Tuple t42 = new Tuple(n, step);
+        Tuple t11 = new Tuple(n, step, 10);
+        Tuple t12 = new Tuple(n, step, 20);
+        Tuple t21 = new Tuple(n, step, 10);
+        Tuple t22 = new Tuple(n, step, 20);
+        Tuple t31 = new Tuple(n, step, 10);
+        Tuple t32 = new Tuple(n, step, 20);
+        Tuple t41 = new Tuple(n, step, 10);
+        Tuple t42 = new Tuple(n, step, 20);
 
         t11.setAssignment(new int[] {1,1,0});
         t11.setValue(7);

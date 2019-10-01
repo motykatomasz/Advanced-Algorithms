@@ -12,12 +12,12 @@ public class TupleComparingTest {
         int n = 2;
         int k = 3;
 
-        Tuple t11 = new Tuple(n, step);
-        Tuple t12 = new Tuple(n, step);
-        Tuple t21 = new Tuple(n, step);
-        Tuple t22 = new Tuple(n, step);
-        Tuple t31 = new Tuple(n, step);
-        Tuple t32 = new Tuple(n, step);
+        Tuple t11 = new Tuple(n, step, 10);
+        Tuple t12 = new Tuple(n, step, 20);
+        Tuple t21 = new Tuple(n, step, 10);
+        Tuple t22 = new Tuple(n, step, 20);
+        Tuple t31 = new Tuple(n, step, 10);
+        Tuple t32 = new Tuple(n, step, 20);
 
         t11.setAssignment(new int[] {1,1,0});
         t11.setValue(3);
