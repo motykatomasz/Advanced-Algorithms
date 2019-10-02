@@ -9,6 +9,7 @@ public class Tuple {
      * Bit-vector of items assigned to the bidder (ai)
      */
     private int[] assignment;
+
     /**
      * Total benefit of the bidder (vi)
      */
@@ -24,9 +25,12 @@ public class Tuple {
      */
     private double step;
 
+    /**
+     * Budget limit for a bidder.
+     */
     private int maxValue;
 
-    public int[] getAssignment() {
+    int[] getAssignment() {
         return assignment;
     }
 
@@ -34,7 +38,7 @@ public class Tuple {
         this.assignment = assignment;
     }
 
-    public int getValue() {
+    int getValue() {
         return value;
     }
 
@@ -42,20 +46,8 @@ public class Tuple {
         this.value = value;
     }
 
-    public int getRangeIndex() {
+    int getRangeIndex() {
         return rangeIndex;
-    }
-
-    public void setRangeIndex(int rangeIndex) {
-        this.rangeIndex = rangeIndex;
-    }
-
-    public int getMaxValue() {
-        return maxValue;
-    }
-
-    public void setMaxValue(int maxValue) {
-        this.maxValue = maxValue;
     }
 
     Tuple(int n, double step, int maxValue) {
@@ -78,14 +70,22 @@ public class Tuple {
         maxValue = tuple.maxValue;
     }
 
-    void assignRange() {
-        rangeIndex = (int) Math.floor(value / step);
-    }
-
+    /**
+     * Assigns item to a bidder
+     * @param bid amount that the bidder bids for the item
+     * @param item index of the item
+     */
     void assignItem(int bid, int item) {
         assignment[item] = 1;
         value = Math.min(maxValue, value + bid);
         assignRange();
+    }
+
+    /**
+     * Calculate index of the interval, the tuple fits in.
+     */
+    void assignRange() {
+        rangeIndex = (int) Math.floor(value / step);
     }
 
     @Override
@@ -96,6 +96,10 @@ public class Tuple {
         return rangeIndex == tuple.getRangeIndex();
     }
 
+    /**
+     * Used for comparing Tuples based on the intervals they are in
+     * @return Hash of the index of the interval
+     */
     @Override
     public int hashCode() {
         return Objects.hash(rangeIndex);

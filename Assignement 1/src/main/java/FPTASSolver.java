@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class FPTASSolver implements Solver {
 
@@ -23,15 +22,16 @@ public class FPTASSolver implements Solver {
             Map<Integer, IntermediateSolution> map = new HashMap<>();
             for (IntermediateSolution is : S) {
                 for (int i = 0; i < a.n; i++) {
-                    IntermediateSolution newIS = new IntermediateSolution(is);
-                    newIS.assignItem(a.b[i][j], j, i);
+                    IntermediateSolution newIs = new IntermediateSolution(is);
+                    newIs.assignItem(a.b[i][j], j, i);
+                    Integer newIsHash = newIs.hashTuples();
 
-                    if (!map.containsKey(newIS.hashTuples()))
-                        map.put(newIS.hashTuples(), newIS);
+                    if (!map.containsKey(newIsHash))
+                        map.put(newIsHash, newIs);
                     else {
-                        IntermediateSolution maxElem = map.get(newIS.hashTuples());
-                        if (!maxElem.compareTotalRevenue(newIS.getTotalRevenue())) {
-                            map.put(newIS.hashTuples(), newIS);
+                        IntermediateSolution maxElem = map.get(newIsHash);
+                        if (!maxElem.compareTotalRevenue(newIs.getTotalRevenue())) {
+                            map.put(newIsHash, newIs);
                         }
                     }
                 }
@@ -39,14 +39,16 @@ public class FPTASSolver implements Solver {
             S = new ArrayList<>(map.values());
         }
 
+        //Measure execution time
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
         System.out.println("Execution time = " + elapsedTime + " miliseconds");
 
+        // Get the solution with largest total benefit
         IntermediateSolution finalSolution =  S.stream().max(Comparator.comparing(IntermediateSolution::getTotalRevenue)).orElse(null);
 
+        // Calculate item assignemnt for the obtained solution (for debugging purposes)
         Tuple[] finalTuples =  finalSolution.getTuples();
-
         for (int i=0; i < finalTuples.length; i++) {
             int[] ass = finalTuples[i].getAssignment();
             for (int j=0; j < ass.length; j++) {
@@ -57,6 +59,7 @@ public class FPTASSolver implements Solver {
             }
         }
 
+        // Return total benefit oh the solution
         return finalSolution.getTotalRevenue();
     }
 

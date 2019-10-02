@@ -14,10 +14,6 @@ public class IntermediateSolution {
      */
     private int totalRevenue;
 
-    /**
-     * Getter
-     * @return
-     */
     int getTotalRevenue() {
         return totalRevenue;
     }
@@ -26,7 +22,7 @@ public class IntermediateSolution {
         this.totalRevenue = totalRevenue;
     }
 
-    public Tuple[] getTuples() {
+    Tuple[] getTuples() {
         return tuples;
     }
 
@@ -60,7 +56,7 @@ public class IntermediateSolution {
     }
 
     /**
-     * Method for assigning item to bidder
+     * Assigns item to bidder
      * @param bid Amount that the bidder bids
      * @param item Index of item
      * @param bidder Index of bidder
@@ -70,18 +66,29 @@ public class IntermediateSolution {
         calculateTotalRevenue();
     }
 
-    boolean compareTotalRevenue(int totalRevenue) {
-        return this.totalRevenue > totalRevenue;
-    }
-
-    int hashTuples() {
-        return Arrays.hashCode(getTuples());
-    }
-
+    /**
+     * Calculates total revenue
+     */
     void calculateTotalRevenue() {
         this.totalRevenue = 0;
         for (int i = 0; i < tuples.length; i++) {
             this.totalRevenue += tuples[i].getValue();
         }
+    }
+
+    /**
+     * Compares revenue of 2 intermediate solutions
+     * @param totalRevenue Total revenue of other intermediate solution
+     */
+    boolean compareTotalRevenue(int totalRevenue) {
+        return this.totalRevenue > totalRevenue;
+    }
+
+    /**
+     * Hashes the tuples, based on the tuples values (see hashCode() for Tuple). Used to calculate the key for HashMap.
+     * @return hash of tuples
+     */
+    int hashTuples() {
+        return Arrays.hashCode(getTuples());
     }
 }
