@@ -108,6 +108,7 @@ public class AuctionProblemInstance {
         }
 
         public static void save(AuctionProblemInstance inst, File file) throws IOException {
+            file.getParentFile().mkdirs();
             BufferedWriter bw = new BufferedWriter(new FileWriter(file));
             bw.write(Integer.toString(inst.n));
             bw.newLine();
