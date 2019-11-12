@@ -48,16 +48,16 @@ public class FPTASSolver implements Solver {
         IntermediateSolution finalSolution =  S.stream().max(Comparator.comparing(IntermediateSolution::getTotalRevenue)).orElse(null);
 
         // Calculate item assignemnt for the obtained solution (for debugging purposes)
-//        Tuple[] finalTuples =  finalSolution.getTuples();
-//        for (int i=0; i < finalTuples.length; i++) {
-//            int[] ass = finalTuples[i].getAssignment();
-//            for (int j=0; j < ass.length; j++) {
-//                if (ass[j] == 1) {
-//                    assignment[j] = i;
-//                    // System.out.println(i);
-//                }
-//            }
-//        }
+        Tuple[] finalTuples =  finalSolution.getTuples();
+        for (int i=0; i < finalTuples.length; i++) {
+            int[] ass = finalTuples[i].getAssignment();
+            for (int j=0; j < ass.length; j++) {
+                if (ass[j] == 1) {
+                    assignment[j] = i;
+                    System.out.println(i);
+                }
+            }
+        }
 
         // Return total benefit oh the solution
         return finalSolution.getTotalRevenue();
