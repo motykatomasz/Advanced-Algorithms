@@ -8,6 +8,7 @@ public class ExactSolver implements Solver {
 
         for (int i = 0; i < counter; i++) {
             List<Integer> candidateSet = new ArrayList<>();
+
             String str = String.format("%" + set.size() + "s", Integer.toBinaryString(i)).replaceAll(" ", "0");
 
             for (int j = 0; j < str.length(); j++) {
@@ -84,7 +85,9 @@ public class ExactSolver implements Solver {
         Map<List<Integer>, List<PartialSolution>> structure = new HashMap<>();
 
         for (List<Integer> subset : generateSubsets(initialSet)) {
-            structure.put(subset, new ArrayList<PartialSolution>());
+            if (subset.size() != 0) {
+                structure.put(subset, new ArrayList<>());
+            }
         }
 
         return structure;
