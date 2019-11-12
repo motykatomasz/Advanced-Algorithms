@@ -2,6 +2,27 @@ import java.util.*;
 
 public class ExactSolver implements Solver {
 
+    Map<List<Integer>, List<PartialSolution>> structure;
+    AuctionProblemInstance a;
+
+    public ExactSolver() {
+
+    }
+
+    public ExactSolver(AuctionProblemInstance au) {
+        a = au;
+        List<Integer> initialSet = createInitialSet();
+        structure = initializeStructure(initialSet);
+    }
+
+    private List<Integer> createInitialSet(){
+        List<Integer> initialSet = new ArrayList<>();
+        for (int i = 0; i < a.k; i++) {
+            initialSet.add(i);
+        }
+        return initialSet;
+    }
+
     public static List<List<Integer>> generateSubsets(List<Integer> set) {
         Set<List<Integer>> subsets = new HashSet<>();
         double counter = Math.pow(2, set.size());
@@ -23,7 +44,7 @@ public class ExactSolver implements Solver {
         return new ArrayList<>(subsets);
     }
 
-    public static int evaluate(int[] assignment, AuctionProblemInstance a) {
+    public int evaluate(int[] assignment) {
         int[] values = new int[a.n];
         for (int i = 0; i < assignment.length; i++) {
             if (assignment[i] != -1) {
@@ -36,13 +57,11 @@ public class ExactSolver implements Solver {
         return Arrays.stream(values).sum();
     }
 
-    private int getOptimalValue(AuctionProblemInstance a) {
+    private int getOptimalValue(AuctionProblemInstance au) {
+        a = au;
         //Initialize structures
-        List<Integer> initialSet = new ArrayList<>();
-        for (int i = 0; i < a.k; i++) {
-            initialSet.add(i);
-        }
-        Map<List<Integer>, List<PartialSolution>> structure = initializeStructure(initialSet);
+        List<Integer> initialSet = createInitialSet();
+        structure = initializeStructure(initialSet);
 
         //Fill out the first row
         for (Map.Entry<List<Integer>, List<PartialSolution>> entry : structure.entrySet()) {
@@ -51,7 +70,7 @@ public class ExactSolver implements Solver {
             for (Integer i : entry.getKey()) {
                 assignment[i] = 0;
             }
-            PartialSolution ps = new PartialSolution(evaluate(assignment, a), assignment);
+            PartialSolution ps = new PartialSolution(evaluate(assignment), assignment);
             entry.getValue().add(0, ps);
             structure.put(entry.getKey(), entry.getValue());
         }
@@ -69,8 +88,8 @@ public class ExactSolver implements Solver {
                     for (Integer j : complementSubset) {
                         assignment[j] = i;
                     }
-                    PartialSolution ps = new PartialSolution(evaluate(assignment, a), assignment);
-                    maxPartialSolution.add(ps.merge(getSafePartial(subset, structure, i-1,a.k)));
+                    PartialSolution ps = new PartialSolution(evaluate(assignment), assignment);
+                    maxPartialSolution.add(ps.merge(getSafePartial(subset, i - 1)));
                 }
                 //Get max form maxPartialSolution and add to structure
                 entry.getValue().add(i, maxPartialSolution.stream().max(Comparator.comparing(PartialSolution::getRevenue)).get());
@@ -80,13 +99,13 @@ public class ExactSolver implements Solver {
         return structure.get(initialSet).get(a.n - 1).getRevenue();
     }
 
-    private PartialSolution getSafePartial(List<Integer> subset, Map<List<Integer>, List<PartialSolution>> structure, Integer ind, Integer k) {
+    private PartialSolution getSafePartial(List<Integer> subset, Integer ind) {
         if (structure.containsKey(subset)) {
             return structure.get(subset).get(ind);
         }
-        int[] assignment = new int[k];
+        int[] assignment = new int[a.k];
         Arrays.fill(assignment, -1);
-        return new PartialSolution(0,assignment);
+        return new PartialSolution(0, assignment);
     }
 
     private Map<List<Integer>, List<PartialSolution>> initializeStructure(List<Integer> initialSet) {

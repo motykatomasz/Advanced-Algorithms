@@ -12,11 +12,13 @@ public class SpecialEvaluateTest {
             AuctionProblemInstance au = AuctionProblemInstance.IO.read("instances/n_10_k_10_dmax_600_4.txt");
             int[] assignment = new int[au.k];
             Arrays.fill(assignment, -1);
-            int revenuePre = ExactSolver.evaluate(assignment, au);
+            ExactSolver es = new ExactSolver();
+            es.a = au;
+            int revenuePre = es.evaluate(assignment);
             System.out.println(revenuePre);
             assignment[1] = 1;
             assignment[2] = 1;
-            int revenuePost = ExactSolver.evaluate(assignment, au);
+            int revenuePost = es.evaluate(assignment);
             System.out.println(revenuePost);
             assertTrue(revenuePost == revenuePre + au.b[1][1] + au.b[1][2]);
 
