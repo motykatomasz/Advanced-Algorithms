@@ -2,7 +2,7 @@ import java.util.*;
 
 public class ExactSolver implements Solver {
 
-    private static List<List<Integer>> generateSubsets(List<Integer> set) {
+    public static List<List<Integer>> generateSubsets(List<Integer> set) {
         Set<List<Integer>> subsets = new HashSet<>();
         double counter = Math.pow(2, set.size());
 
@@ -20,6 +20,19 @@ public class ExactSolver implements Solver {
         }
 
         return new ArrayList<>(subsets);
+    }
+
+    public static int evaluate(int[] assignment, AuctionProblemInstance a) {
+        int[] values = new int[a.n];
+        for (int i = 0; i < assignment.length; i++) {
+            if (assignment[i] != -1) {
+                values[assignment[i]] += a.b[assignment[i]][i];
+            }
+        }
+        for (int i = 0; i < values.length; i++) {
+            values[i] = Math.min(values[i], a.d[i]);
+        }
+        return Arrays.stream(values).sum();
     }
 
     private int getOptimalValue(AuctionProblemInstance a) {
@@ -76,12 +89,6 @@ public class ExactSolver implements Solver {
 
         return structure;
     }
-
-    private int evaluate(int[] assignment, AuctionProblemInstance a) {
-
-        return 0;
-    }
-
 
     public AuctionProblemInstance.Solution solve(AuctionProblemInstance a, double epsilon) {
         return new AuctionProblemInstance.Solution(getOptimalValue(a), 0);
