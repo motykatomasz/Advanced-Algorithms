@@ -16,8 +16,14 @@ public class PartialSolution {
         return revenue;
     }
 
-    public PartialSolution merge(PartialSolution other){
+    public PartialSolution merge(PartialSolution other) {
+        for (int i = 0; i < this.assignment.length; i++) {
 
-        return null;
+            if (this.assignment[i] == -1 && other.assignment[i] != -1) {
+                this.assignment[i] = other.assignment[i];
+            }
+        }
+        this.revenue += other.revenue;
+        return this;
     }
 }
