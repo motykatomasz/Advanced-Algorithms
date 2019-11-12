@@ -70,15 +70,23 @@ public class ExactSolver implements Solver {
                         assignment[j] = i;
                     }
                     PartialSolution ps = new PartialSolution(evaluate(assignment, a), assignment);
-                    maxPartialSolution.add(ps.merge(entry.getValue().get(i - 1)));
+                    maxPartialSolution.add(ps.merge(getSafePartial(subset, structure, i-1,a.k)));
                 }
                 //Get max form maxPartialSolution and add to structure
                 entry.getValue().add(i, maxPartialSolution.stream().max(Comparator.comparing(PartialSolution::getRevenue)).get());
                 structure.put(entry.getKey(), entry.getValue());
             }
         }
-
         return structure.get(initialSet).get(a.n - 1).getRevenue();
+    }
+
+    private PartialSolution getSafePartial(List<Integer> subset, Map<List<Integer>, List<PartialSolution>> structure, Integer ind, Integer k) {
+        if (structure.containsKey(subset)) {
+            return structure.get(subset).get(ind);
+        }
+        int[] assignment = new int[k];
+        Arrays.fill(assignment, -1);
+        return new PartialSolution(0,assignment);
     }
 
     private Map<List<Integer>, List<PartialSolution>> initializeStructure(List<Integer> initialSet) {
