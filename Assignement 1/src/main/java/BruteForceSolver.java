@@ -16,7 +16,13 @@ public class BruteForceSolver implements Solver {
 
     public AuctionProblemInstance.Solution solve(AuctionProblemInstance a, double epsilon) {
         int[] assignment = new int[a.k];
-        return new AuctionProblemInstance.Solution(getOptimalValue(a, assignment, 0), 0);
+        long startTime = System.currentTimeMillis();
+        AuctionProblemInstance.Solution solution = new AuctionProblemInstance.Solution(getOptimalValue(a, assignment, 0), 0);
+        //Measure execution time
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        System.out.println("Execution time for brute force algorithm n=" + a.n + ", k=" + a.k + " = " + elapsedTime + " miliseconds");
+        return solution;
     }
 
     @Override
