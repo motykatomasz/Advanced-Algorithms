@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class ExactSolver implements Solver {
@@ -28,21 +29,24 @@ public class ExactSolver implements Solver {
         for (int i = 1; i < a.n; i++) {
             for (Map.Entry<List<Integer>, List<PartialSolution>> entry : structure.entrySet()) {
 
-                List<PartialSolution> maxPartialSolution = new ArrayList<>();
+                //List<PartialSolution> maxPartialSolution = new ArrayList<>();
+                PartialSolution maxPartialSolution = new PartialSolution();
                 for (List<Integer> subset : subsetsOfSubsets.get(entry.getKey())) {
                     Set<Integer> complementSubset = new HashSet(entry.getKey());
                     complementSubset.removeAll(subset);
+                    PartialSolution previousPartialSolution = getSafePartial(subset, i - 1);
 
-                    int[] assignment = new int[a.k];
-                    Arrays.fill(assignment, -1);
+                    int[] assignment = Arrays.copyOf(previousPartialSolution.assignment, a.k);
                     for (Integer j : complementSubset) {
                         assignment[j] = i;
                     }
                     PartialSolution ps = new PartialSolution(evaluate(assignment), assignment);
-                    maxPartialSolution.add(ps.merge(getSafePartial(subset, i - 1)));
+                    if (maxPartialSolution.getRevenue() < ps.getRevenue())
+                        maxPartialSolution = ps;
                 }
                 //Get max form maxPartialSolution and add to structure
-                entry.getValue().add(i, maxPartialSolution.stream().max(Comparator.comparing(PartialSolution::getRevenue)).get());
+                //entry.getValue().add(i, maxPartialSolution.stream().max(Comparator.comparing(PartialSolution::getRevenue)).get());
+                entry.getValue().add(i, maxPartialSolution);
                 structure.put(entry.getKey(), entry.getValue());
             }
         }
