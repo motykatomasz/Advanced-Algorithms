@@ -3,9 +3,21 @@ import java.util.*;
 public class ExactSolver implements Solver {
 
     AuctionProblemInstance a;
+    /**
+     * Array containing all the partial solutions which may be used
+     */
     PartialSolution[] structure;
+    /**
+     * Map of subsets to corresponding indexes in array called structure
+     */
     Map<List<Integer>, Integer> setToIdDict;
 
+    /**
+     * Dynamic programming implementation of the algorithm
+     *
+     * @param au
+     * @return
+     */
     private int getOptimalValue(AuctionProblemInstance au) {
         a = au;
         //Initialize structures
@@ -43,6 +55,11 @@ public class ExactSolver implements Solver {
         return structure[setToIdDict.get(initialSet)].getRevenue();
     }
 
+    /**
+     * Method to create initial set containing all the items of the auction
+     *
+     * @return initial set
+     */
     private List<Integer> createInitialSet() {
         List<Integer> initialSet = new ArrayList<>();
         for (int i = 0; i < a.k; i++) {
@@ -51,6 +68,11 @@ public class ExactSolver implements Solver {
         return initialSet;
     }
 
+    /**
+     * Method initializing map containg mapping from subsets to corresponding items in structure with partial solutions
+     *
+     * @param initialSet set containing all the items
+     */
     private void initializeSetToIdDict(List<Integer> initialSet) {
         setToIdDict = new HashMap<>();
         int i = 0;
@@ -60,6 +82,13 @@ public class ExactSolver implements Solver {
         }
     }
 
+    /**
+     * Method creating first partial solution
+     *
+     * @param assignment assignment of items to corresponding clients
+     * @param set        subset of items
+     * @return initial solution for given assignment
+     */
     private PartialSolution createInitialSolution(int[] assignment, List<Integer> set) {
 
         List<List<Integer>> subsets = Tools.generateSubsets(set);
@@ -71,6 +100,9 @@ public class ExactSolver implements Solver {
 
     }
 
+    /**
+     * Method filling structure for first client
+     */
     public void fillFirstRow() {
         for (List<Integer> subset : setToIdDict.keySet()) {
             int[] assignment = new int[a.k];
@@ -79,10 +111,17 @@ public class ExactSolver implements Solver {
                 assignment[i] = 0;
             }
             PartialSolution ps = createInitialSolution(assignment, subset);
-            structure[setToIdDict.get(subset)]= ps;
+            structure[setToIdDict.get(subset)] = ps;
         }
     }
 
+    /**
+     * Adaptation of evaluate method to be able to work with -1 assignments, which correspond to assigning certain
+     * item to none of the clients
+     *
+     * @param assignment
+     * @return
+     */
     public int evaluate(int[] assignment) {
         int[] values = new int[a.n];
         for (int i = 0; i < assignment.length; i++) {
