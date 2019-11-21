@@ -33,7 +33,6 @@ public class ExactSolver implements Solver {
         List<Integer> initialSet = createInitialSet();
         List<PartialSolution> helpStructure = initializeStructure(initialSet);
         structure = new ArrayList<>();
-        System.out.println("Initialization done");
 
         for (PartialSolution partialSolution : helpStructure) {
             int[] assignment = new int[a.k];
@@ -44,11 +43,10 @@ public class ExactSolver implements Solver {
             PartialSolution ps = new PartialSolution(evaluate(assignment), assignment, setToIdDict, partialSolution.originalSet);
             structure.add(partialSolution.originalSetId, ps);
         }
-        System.out.println("First done");
         for (int i = 1; i < a.n; i++) {
             List<PartialSolution> newStructure = new ArrayList<>(structure);
             for (PartialSolution partialSolution : structure) {
-                if (partialSolution.originalSet.size() != 0) {
+
                     PartialSolution maxPartialSolution = new PartialSolution();
                     for (Subset subsetObj : partialSolution.subsetList) {
                         Set<Integer> complementSubset = new HashSet(partialSolution.originalSet);
@@ -61,14 +59,12 @@ public class ExactSolver implements Solver {
                         }
                         PartialSolution ps = new PartialSolution(evaluate(assignment), assignment, partialSolution.originalSet, partialSolution.originalSetId, partialSolution.subsetList);
 
-                        if (maxPartialSolution.getRevenue() < ps.getRevenue())
+                        if (maxPartialSolution.getRevenue() <= ps.getRevenue())
                             maxPartialSolution = ps;
                     }
                     //Get max form maxPartialSolution and add to structure
-                    newStructure.add(partialSolution.originalSetId, maxPartialSolution);
-                } else {
-                    newStructure.add(partialSolution.originalSetId, partialSolution);
-                }
+                    newStructure.set(partialSolution.originalSetId, maxPartialSolution);
+
             }
             structure = newStructure;
         }
