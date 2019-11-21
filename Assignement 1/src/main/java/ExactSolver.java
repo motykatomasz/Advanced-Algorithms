@@ -25,13 +25,17 @@ public class ExactSolver implements Solver {
         initializeSetToIdDict(initialSet);
         structure = new PartialSolution[setToIdDict.size()];
 
+        // Fill structure for first bidder only
         fillFirstRow();
 
+        // Iteratively update solutions in structure using solutions from previous stage (for less bidders)
         for (int i = 1; i < a.n; i++) {
             PartialSolution[] newStructure = new PartialSolution[setToIdDict.size()];
             for (PartialSolution partialSolution : structure) {
 
                 PartialSolution maxPartialSolution = new PartialSolution();
+
+                // Check all possible ways to introduce new bidder to previous sub-problem
                 for (Subset subsetObj : partialSolution.subsetList) {
                     List<Integer> complementSubset = new ArrayList<>(partialSolution.originalSet);
                     complementSubset.removeAll(subsetObj.subset);
@@ -46,12 +50,13 @@ public class ExactSolver implements Solver {
                     if (maxPartialSolution.getRevenue() <= ps.getRevenue())
                         maxPartialSolution = ps;
                 }
-                //Get max form maxPartialSolution and add to structure
                 newStructure[partialSolution.originalSetId] = maxPartialSolution;
 
             }
             structure = newStructure;
         }
+
+        // Return optimal solution for root problem
         return structure[setToIdDict.get(initialSet)].getRevenue();
     }
 
