@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 
 public class TestCasesGenerator {
     public static void main(String[] args) {
-        generateForEps();
+        generateForK();
         System.out.println("Genererated");
         double[] eps = {0.1, 0.2, 0.3, 0.4, 0.5};
-        measure("./test_eps/", 0.4, eps);
+//        measure("./test_eps/", 0.4, eps);
     }
 
     static void measure(String pathToDirectory, double epsilon, double[] epsilons) {
@@ -41,15 +41,15 @@ public class TestCasesGenerator {
     }
 
     static void generateForK() {
-        int n = 5;
+        int n = 3;
         int d = 400;
-        int[] k = {2, 5, 7, 10, 15, 20};
+        int[] k = {2,3};
 
         for (int i = 0; i < k.length; i++) {
             String test_k = "Test_n_" + n + "_d_" + d + "_k_";
             try {
                 AuctionProblemInstance.IO.save(AuctionProblemInstance.generate(n, k[i], d),
-                        System.getProperty("user.dir") + "\\test_k\\" + test_k + k[i] + ".txt");
+                        System.getProperty("user.dir") + "/test_k/" + test_k + k[i] + ".txt");
             } catch (IOException e) {
                 System.out.println("Something went wrong");
             }
