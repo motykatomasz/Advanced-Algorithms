@@ -3,32 +3,31 @@ import java.util.*;
 public class ExactSolver implements Solver {
 
     AuctionProblemInstance a;
+
     /**
-     * Array containing all the partial solutions which may be used
+     * Lookup table containing solutions to subproblems.
      */
     PartialSolution[] structure;
+
     /**
-     * Map of subsets to corresponding indexes in array called structure
+     * Map of subsets to corresponding indexes in lookup table.
      */
     Map<List<Integer>, Integer> setToIdDict;
 
     /**
-     * Dynamic programming implementation of the algorithm
-     *
-     * @param au
-     * @return
+     * Implementation of the dynamic programming algorithm
      */
     private int getOptimalValue(AuctionProblemInstance au) {
         a = au;
-        //Initialize structures
+        // Initialize structures
         List<Integer> initialSet = createInitialSet();
         initializeSetToIdDict(initialSet);
         structure = new PartialSolution[setToIdDict.size()];
 
-        // Fill structure for first bidder only
+        // Fill lookup table for first bidder only
         fillFirstRow();
 
-        // Iteratively update solutions in structure using solutions from previous stage (for less bidders)
+        // Iteratively update lookup table using solutions from previous stage (for less bidders)
         for (int i = 1; i < a.n; i++) {
             PartialSolution[] newStructure = new PartialSolution[setToIdDict.size()];
             for (PartialSolution partialSolution : structure) {
@@ -37,7 +36,7 @@ public class ExactSolver implements Solver {
 
                 // Check all possible ways to introduce new bidder to previous sub-problem
                 for (Subset subsetObj : partialSolution.subsetList) {
-                    List<Integer> complementSubset = new ArrayList<>(partialSolution.originalSet);
+                    List<Integer> complementSubset = new ArrayList<>(partialSolution.originalSet.subset);
                     complementSubset.removeAll(subsetObj.subset);
                     PartialSolution previousPartialSolution = structure[subsetObj.subsetId];
 
@@ -45,12 +44,12 @@ public class ExactSolver implements Solver {
                     for (Integer j : complementSubset) {
                         assignment[j] = i;
                     }
-                    PartialSolution ps = new PartialSolution(evaluate(assignment), assignment, partialSolution.originalSet, partialSolution.originalSetId, partialSolution.subsetList);
+                    PartialSolution ps = new PartialSolution(evaluate(assignment), assignment, partialSolution.originalSet, partialSolution.subsetList);
 
                     if (maxPartialSolution.getRevenue() <= ps.getRevenue())
                         maxPartialSolution = ps;
                 }
-                newStructure[partialSolution.originalSetId] = maxPartialSolution;
+                newStructure[partialSolution.originalSet.subsetId] = maxPartialSolution;
 
             }
             structure = newStructure;
@@ -61,9 +60,7 @@ public class ExactSolver implements Solver {
     }
 
     /**
-     * Method to create initial set containing all the items of the auction
-     *
-     * @return initial set
+     * Method to create initial set containing all the items of the auction.
      */
     private List<Integer> createInitialSet() {
         List<Integer> initialSet = new ArrayList<>();
@@ -74,9 +71,7 @@ public class ExactSolver implements Solver {
     }
 
     /**
-     * Method initializing map containg mapping from subsets to corresponding items in structure with partial solutions
-     *
-     * @param initialSet set containing all the items
+     * Method initializing map containing mapping from subsets to indices in lookup table.
      */
     private void initializeSetToIdDict(List<Integer> initialSet) {
         setToIdDict = new HashMap<>();
@@ -88,25 +83,7 @@ public class ExactSolver implements Solver {
     }
 
     /**
-     * Method creating first partial solution
-     *
-     * @param assignment assignment of items to corresponding clients
-     * @param set        subset of items
-     * @return initial solution for given assignment
-     */
-    private PartialSolution createInitialSolution(int[] assignment, List<Integer> set) {
-
-        List<List<Integer>> subsets = Tools.generateSubsets(set);
-        List<Subset> subsetList = new ArrayList<>();
-        for (List<Integer> subsetElem : subsets) {
-            subsetList.add(new Subset(setToIdDict.get(subsetElem), subsetElem));
-        }
-        return new PartialSolution(evaluate(assignment), assignment, set, this.setToIdDict.get(set), subsetList);
-
-    }
-
-    /**
-     * Method filling structure for first client
+     * Method filling lookup table for first bidder only.
      */
     public void fillFirstRow() {
         for (List<Integer> subset : setToIdDict.keySet()) {
@@ -121,11 +98,22 @@ public class ExactSolver implements Solver {
     }
 
     /**
+     * Method creating initial solution for given sub-problem.
+     */
+    private PartialSolution createInitialSolution(int[] assignment, List<Integer> set) {
+
+        List<List<Integer>> subsets = Tools.generateSubsets(set);
+        List<Subset> subsetList = new ArrayList<>();
+        for (List<Integer> subsetElem : subsets) {
+            subsetList.add(new Subset(setToIdDict.get(subsetElem), subsetElem));
+        }
+        return new PartialSolution(evaluate(assignment), assignment, new Subset(this.setToIdDict.get(set), set), subsetList);
+
+    }
+
+    /**
      * Adaptation of evaluate method to be able to work with -1 assignments, which correspond to assigning certain
-     * item to none of the clients
-     *
-     * @param assignment
-     * @return
+     * item to none of the bidders.
      */
     public int evaluate(int[] assignment) {
         int[] values = new int[a.n];
