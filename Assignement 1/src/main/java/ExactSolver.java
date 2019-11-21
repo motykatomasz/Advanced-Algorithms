@@ -4,28 +4,7 @@ public class ExactSolver implements Solver {
 
     AuctionProblemInstance a;
     List<PartialSolution> structure;
-    Map<List<Integer>, Integer> setToIdDict = new HashMap<>();
-
-    public static List<List<Integer>> generateSubsets(List<Integer> set) {
-        Set<List<Integer>> subsets = new HashSet<>();
-        double counter = Math.pow(2, set.size());
-
-        for (int i = 0; i < counter; i++) {
-            List<Integer> candidateSet = new ArrayList<>();
-
-            String str = String.format("%" + set.size() + "s", Integer.toBinaryString(i)).replaceAll(" ", "0");
-
-            for (int j = 0; j < str.length(); j++) {
-                char letter = str.charAt(j);
-                if (letter == '1') {
-                    candidateSet.add(set.get(j));
-                }
-            }
-            subsets.add(candidateSet);
-        }
-
-        return new ArrayList<>(subsets);
-    }
+    Map<List<Integer>, Integer> setToIdDict;
 
     private int getOptimalValue(AuctionProblemInstance au) {
         a = au;
@@ -34,36 +13,29 @@ public class ExactSolver implements Solver {
         initializeSetToIdDict(initialSet);
         structure = new ArrayList<>();
 
-        for (List<Integer> subset : setToIdDict.keySet()) {
-            int[] assignment = new int[a.k];
-            Arrays.fill(assignment, -1);
-            for (Integer i : subset) {
-                assignment[i] = 0;
-            }
-            PartialSolution ps = new PartialSolution(evaluate(assignment), assignment, setToIdDict, subset);
-            structure.add(setToIdDict.get(subset), ps);
-        }
+        fillFirstRow();
+
         for (int i = 1; i < a.n; i++) {
             List<PartialSolution> newStructure = new ArrayList<>(structure);
             for (PartialSolution partialSolution : structure) {
 
-                    PartialSolution maxPartialSolution = new PartialSolution();
-                    for (Subset subsetObj : partialSolution.subsetList) {
-                        Set<Integer> complementSubset = new HashSet(partialSolution.originalSet);
-                        complementSubset.removeAll(subsetObj.subset);
-                        PartialSolution previousPartialSolution = structure.get(subsetObj.subsetId);
+                PartialSolution maxPartialSolution = new PartialSolution();
+                for (Subset subsetObj : partialSolution.subsetList) {
+                    Set<Integer> complementSubset = new HashSet(partialSolution.originalSet);
+                    complementSubset.removeAll(subsetObj.subset);
+                    PartialSolution previousPartialSolution = structure.get(subsetObj.subsetId);
 
-                        int[] assignment = Arrays.copyOf(previousPartialSolution.assignment, a.k);
-                        for (Integer j : complementSubset) {
-                            assignment[j] = i;
-                        }
-                        PartialSolution ps = new PartialSolution(evaluate(assignment), assignment, partialSolution.originalSet, partialSolution.originalSetId, partialSolution.subsetList);
-
-                        if (maxPartialSolution.getRevenue() <= ps.getRevenue())
-                            maxPartialSolution = ps;
+                    int[] assignment = Arrays.copyOf(previousPartialSolution.assignment, a.k);
+                    for (Integer j : complementSubset) {
+                        assignment[j] = i;
                     }
-                    //Get max form maxPartialSolution and add to structure
-                    newStructure.set(partialSolution.originalSetId, maxPartialSolution);
+                    PartialSolution ps = new PartialSolution(evaluate(assignment), assignment, partialSolution.originalSet, partialSolution.originalSetId, partialSolution.subsetList);
+
+                    if (maxPartialSolution.getRevenue() <= ps.getRevenue())
+                        maxPartialSolution = ps;
+                }
+                //Get max form maxPartialSolution and add to structure
+                newStructure.set(partialSolution.originalSetId, maxPartialSolution);
 
             }
             structure = newStructure;
@@ -80,15 +52,36 @@ public class ExactSolver implements Solver {
     }
 
     private void initializeSetToIdDict(List<Integer> initialSet) {
-//        List<PartialSolution> structure = new ArrayList<>();
+        setToIdDict = new HashMap<>();
         int i = 0;
-        for (List<Integer> subset : generateSubsets(initialSet)) {
-//            structure.add(new PartialSolution(subset, i));
+        for (List<Integer> subset : Tools.generateSubsets(initialSet)) {
             setToIdDict.put(subset, i);
             i += 1;
         }
     }
 
+    private PartialSolution createInitialSolution(int[] assignment, List<Integer> set) {
+
+        List<List<Integer>> subsets = Tools.generateSubsets(set);
+        List<Subset> subsetList = new ArrayList<>();
+        for (List<Integer> subsetElem : subsets) {
+            subsetList.add(new Subset(setToIdDict.get(subsetElem), subsetElem));
+        }
+        return new PartialSolution(evaluate(assignment), assignment, set, this.setToIdDict.get(set), subsetList);
+
+    }
+
+    public void fillFirstRow() {
+        for (List<Integer> subset : setToIdDict.keySet()) {
+            int[] assignment = new int[a.k];
+            Arrays.fill(assignment, -1);
+            for (Integer i : subset) {
+                assignment[i] = 0;
+            }
+            PartialSolution ps = createInitialSolution(assignment, subset);
+            structure.add(setToIdDict.get(subset), ps);
+        }
+    }
 
     public int evaluate(int[] assignment) {
         int[] values = new int[a.n];
