@@ -3,7 +3,7 @@ import java.util.*;
 public class ExactSolver implements Solver {
 
     AuctionProblemInstance a;
-    List<PartialSolution> structure;
+    PartialSolution[] structure;
     Map<List<Integer>, Integer> setToIdDict;
 
     private int getOptimalValue(AuctionProblemInstance au) {
@@ -11,19 +11,19 @@ public class ExactSolver implements Solver {
         //Initialize structures
         List<Integer> initialSet = createInitialSet();
         initializeSetToIdDict(initialSet);
-        structure = new ArrayList<>();
+        structure = new PartialSolution[setToIdDict.size()];
 
         fillFirstRow();
 
         for (int i = 1; i < a.n; i++) {
-            List<PartialSolution> newStructure = new ArrayList<>(structure);
+            PartialSolution[] newStructure = new PartialSolution[setToIdDict.size()];
             for (PartialSolution partialSolution : structure) {
 
                 PartialSolution maxPartialSolution = new PartialSolution();
                 for (Subset subsetObj : partialSolution.subsetList) {
-                    Set<Integer> complementSubset = new HashSet(partialSolution.originalSet);
+                    List<Integer> complementSubset = new ArrayList<>(partialSolution.originalSet);
                     complementSubset.removeAll(subsetObj.subset);
-                    PartialSolution previousPartialSolution = structure.get(subsetObj.subsetId);
+                    PartialSolution previousPartialSolution = structure[subsetObj.subsetId];
 
                     int[] assignment = Arrays.copyOf(previousPartialSolution.assignment, a.k);
                     for (Integer j : complementSubset) {
@@ -35,12 +35,12 @@ public class ExactSolver implements Solver {
                         maxPartialSolution = ps;
                 }
                 //Get max form maxPartialSolution and add to structure
-                newStructure.set(partialSolution.originalSetId, maxPartialSolution);
+                newStructure[partialSolution.originalSetId] = maxPartialSolution;
 
             }
             structure = newStructure;
         }
-        return structure.get(setToIdDict.get(initialSet)).getRevenue();
+        return structure[setToIdDict.get(initialSet)].getRevenue();
     }
 
     private List<Integer> createInitialSet() {
@@ -79,7 +79,7 @@ public class ExactSolver implements Solver {
                 assignment[i] = 0;
             }
             PartialSolution ps = createInitialSolution(assignment, subset);
-            structure.add(setToIdDict.get(subset), ps);
+            structure[setToIdDict.get(subset)]= ps;
         }
     }
 
