@@ -31,17 +31,17 @@ public class ExactSolver implements Solver {
         a = au;
         //Initialize structures
         List<Integer> initialSet = createInitialSet();
-        List<PartialSolution> helpStructure = initializeStructure(initialSet);
+        initializeSetToIdDict(initialSet);
         structure = new ArrayList<>();
 
-        for (PartialSolution partialSolution : helpStructure) {
+        for (List<Integer> subset : setToIdDict.keySet()) {
             int[] assignment = new int[a.k];
             Arrays.fill(assignment, -1);
-            for (Integer i : partialSolution.originalSet) {
+            for (Integer i : subset) {
                 assignment[i] = 0;
             }
-            PartialSolution ps = new PartialSolution(evaluate(assignment), assignment, setToIdDict, partialSolution.originalSet);
-            structure.add(partialSolution.originalSetId, ps);
+            PartialSolution ps = new PartialSolution(evaluate(assignment), assignment, setToIdDict, subset);
+            structure.add(setToIdDict.get(subset), ps);
         }
         for (int i = 1; i < a.n; i++) {
             List<PartialSolution> newStructure = new ArrayList<>(structure);
@@ -79,15 +79,14 @@ public class ExactSolver implements Solver {
         return initialSet;
     }
 
-    private List<PartialSolution> initializeStructure(List<Integer> initialSet) {
-        List<PartialSolution> structure = new ArrayList<>();
+    private void initializeSetToIdDict(List<Integer> initialSet) {
+//        List<PartialSolution> structure = new ArrayList<>();
         int i = 0;
         for (List<Integer> subset : generateSubsets(initialSet)) {
-            structure.add(new PartialSolution(subset, i));
+//            structure.add(new PartialSolution(subset, i));
             setToIdDict.put(subset, i);
             i += 1;
         }
-        return structure;
     }
 
 
