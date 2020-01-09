@@ -1,4 +1,4 @@
-w = [0,1,0,3;1,0,0.5,2;0,0.5,0,1;3,2,1,0];
+w = read_graph("large.txt")
 n=length(w);
 yalmip('clear');
 Y=sdpvar(n,n);
@@ -10,13 +10,16 @@ maxcutsol=solvesdp(constraints,objective);
 B = Q * sqrt(A);
 B = B';
 while 1
-    r = normrnd(0,1,[1,4]);
+    r = normrnd(0,1,[1,n]);
     r = r./norm(r);
 
     S = r*B > 0;
-    maxcut = sum(sum(w(find(S>0),find(S==0))));
+    candidate_sol = sum(sum(w(find(S>0),find(S==0))));
 
-    if maxcut > 0.87856*value(objective)
+    if candidate_sol > 0.87856*value(objective)
         break;
     end
 end
+
+S
+candidate_sol
