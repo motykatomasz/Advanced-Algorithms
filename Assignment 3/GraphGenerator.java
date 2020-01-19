@@ -48,34 +48,38 @@ public class GraphGenerator1 {
 		if (edge.length() > 5)
 			edge = edge.substring(0, 6);
 		String id = String.format("%02d", nr);
-		String filename = "maxcut_"+nodes+"_"+edge+"_"+maxWeight+"_instance_"+id;
 
 
-		//write the file
-		PrintWriter out = null;
-		try {
-			out = new PrintWriter(new BufferedWriter(new FileWriter(filename)));
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
+		for (int i=1; i <=5; i++) {
+			String filename = "maxcut_" + nodes + "_" + edge + "_" + maxWeight + "_instance_" + i + ".txt";
 
-		out.println(nodes);
 
-		int weight;
-		double random;
-		for (int n1 = 2; n1 < nodes; n1++) {
-			for (int n2 = 1; n2 < n1; n2++) {
-				if (n1 == n2)
-					continue;
-				random = Math.random();
-				if (random < edgeProbability) {
-					weight = (int) (Math.random() * maxWeight + 1);
-					out.println(n1 + " " + n2 + " " + weight);
+			//write the file
+			PrintWriter out = null;
+			try {
+				out = new PrintWriter(new BufferedWriter(new FileWriter(filename)));
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(0);
+			}
+
+			out.println(nodes);
+
+			int weight;
+			double random;
+			for (int n1 = 2; n1 < nodes+1; n1++) {
+				for (int n2 = 1; n2 < n1; n2++) {
+					if (n1 == n2)
+						continue;
+					random = Math.random();
+					if (random < edgeProbability) {
+						weight = (int) (Math.random() * maxWeight + 1);
+						out.println(n1 + " " + n2 + " " + weight);
+					}
 				}
 			}
+			out.flush();
+			out.close();
 		}
-		out.flush();
-		out.close();
 	}
 }
