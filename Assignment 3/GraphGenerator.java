@@ -67,8 +67,8 @@ public class GraphGenerator1 {
 
 			int weight;
 			double random;
-			for (int n1 = 2; n1 < nodes+1; n1++) {
-				for (int n2 = 1; n2 < n1; n2++) {
+			for (int n1 = 1; n1 < nodes; n1++) {
+				for (int n2 = 0; n2 < n1; n2++) {
 					if (n1 == n2)
 						continue;
 					random = Math.random();

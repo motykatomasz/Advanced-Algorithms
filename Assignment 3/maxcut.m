@@ -1,6 +1,6 @@
 clear;
 clc;
-w = read_graph("data/10/p1/maxcut_10_10_1000_instance_4.txt")
+w = read_graph("maxcut_10_05_100_instance_1.txt")
 n=length(w);
 yalmip('clear');
 Y=sdpvar(n,n);
@@ -21,12 +21,11 @@ while 1
     r = r./norm(r);
 
     S = r*B > 0;
-    candidate_sol = sum(sum(w(find(S>0),find(S==0))));
+    final_sol = sum(sum(w(find(S>0),find(S==0))));
 
-    if candidate_sol > 0.87856*(-value(objective))
+    if final_sol > 0.87856*(-value(objective))
         break;
     end
 end
-
-candidate_sol
 -value(objective)
+final_sol
